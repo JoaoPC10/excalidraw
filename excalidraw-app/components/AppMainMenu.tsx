@@ -4,7 +4,7 @@ import {
   eyeIcon,
 } from "@excalidraw/excalidraw/components/icons";
 import { MainMenu } from "@excalidraw/excalidraw/index";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { isDevEnv } from "@excalidraw/common";
 
@@ -15,6 +15,8 @@ import { isExcalidrawPlusSignedUser } from "../app_constants";
 
 import { saveDebugState } from "./DebugCanvas";
 
+
+
 export const AppMainMenu: React.FC<{
   onCollabDialogOpen: () => any;
   isCollaborating: boolean;
@@ -22,7 +24,23 @@ export const AppMainMenu: React.FC<{
   theme: Theme | "system";
   setTheme: (theme: Theme | "system") => void;
   refresh: () => void;
+  
 }> = React.memo((props) => {
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+      if ((event.ctrlKey || (isMac && event.metaKey)) && event.key === "f") {
+        event.preventDefault();
+
+       
+        const input = document.querySelector<HTMLInputElement>('input[type="search"]');
+        input?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
   return (
     <MainMenu>
       <MainMenu.DefaultItems.LoadScene />
@@ -88,4 +106,6 @@ export const AppMainMenu: React.FC<{
       <MainMenu.DefaultItems.ChangeCanvasBackground />
     </MainMenu>
   );
+
+  
 });
